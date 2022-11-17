@@ -110,7 +110,7 @@ Kemudian, saya melakukan modifikasi pada `lib/main.dart` untuk menerapkan logic.
 
 ## Perbedaan antara Navigator.push dan Navigator.pushReplacement
 
-
+Ketika menggunakan `Navigator.push`, route yang ada di bawahnya akan tetap tersimpan dalam stack, sedangkan `Navigator.pushReplacment` akan membuang route yang ditimpa (menggantikannya).
 
 ## Penjelasan tentang Widget yang Digunakan Beserta Fungsi
 
@@ -137,82 +137,56 @@ Berikut widget yang saya gunakan:
 | TextFormField | Widget untuk input text pada form |
 | InputDecoration | Untuk konfigurasi input text field (border, style, dsb) |
 | IconData | Untuk menampilan icon (sama dengan widget icon) |
-| OutlineInputBorder |
-| ElevatedButton |
-| RoundedRectangleBorder |
-| SizedBox |
-| DropdownButton |
-| Dialog |
-| Stack |
-| Card |
-| BorderSize |
+| ElevatedButton | Untuk membuat suatu button |
+| RoundedRectangleBorder | Untuk membuat border pada widget |
+| SizedBox | Widget kosong dengan ukuran yang dapat diatur |
+| DropdownButton | Widget untuk menampilkan dropdown |
+| Dialog | Widget untuk menampilkan dialog ketika suatu item di trigger |
+| Stack | Widget untuk menampung beberapa content berupa stack |
+| Card | Widget untuk menampung komponen dalam suatu card |
 
 ## Penjelasan tentang event pada Flutter
+
+| Event | Fungsi |
+| ----- | ----- |
+| onPressed | Berfungsi untuk eksekusi ketika suatu tombol ditekan |
+| onTap | Berfungsi untuk eksekusi user melakukan tabs pada object yang di render| 
+| onSave | Berfungsi untuk save suatu form |
+| onChange | Berfungsi untuk eksekusi user melakukan tabs pada object yang di render| 
+| onHover | Melakukan hover ketika pointer menunjuk suatu widget |
+| onEnter | Berfungsi untuk eksekusi user menekan enter | 
+| onExit | Melakukan trigger ketika pointer melakukan exit di widget, ketika widget masih dimuat |
 
 
 ## Penjelasan cara kerja Navigator dalam mengganti halaman pada Flutter
 
+Navigator akan mengelola halaman atau screen pada applikasi flutter dengan konsep stack. Jika seseorang menekan tombol, maka user akan dibawa ke halaman lain, sehingga secara general stack akan bertambah. Ketika user keluar dari screen, maka stack akan diperbaharui dengan melakukan pop pada stack.
 
 ## Implementasi Checklist
 
-Terlebih dahulu, saya membuat app flutter dengan command berikut:
-             `flutter create counter_7`
-
-Kemudian, saya melakukan modifikasi pada `lib/main.dart` untuk menerapkan logic. Berikut prosesnya:
-
-1. Membuat fungsi decrement untuk counter, sebagai berikut:
+1. Membuat suatu file `form.dart` untuk membuat form judul, nominal, tanggal, dan jenis. Di file ini, di bagian atasnya akan dibuat suatu list untuk menampung object dari model, dan didefinisikan di luar kelas. Berikut tampilannya:
     ```dart
-      void _decrementCounter() {
-        setState(() {
-        if (_counter <= 1) {
-            _visible = false;
-        } else {
-            _visible = true;
+        List<Model> listModel = [];
+    ```
+    Ketika melakukan penyimpanan menggunakan onSaved, maka akan menambahkan objek model ke list tersebut.
+2. Membuat suatu file `model.dart`, untuk membuat model berisi judul, nominal, tanggal, dan jenis. Berikut tampilan modelnya:
+    ```dart
+        class Model {
+        String judul;
+        String nominal;
+        String jenis;
+        String dateTime;
+
+        Model(
+            {required this.judul,
+            required this.nominal,
+            required this.jenis,
+            required this.dateTime});
         }
-        _counter--;
-        _changeBool();
-        });
-    }
-    ```
-    Adapun fungsi `_changeBool()` berfungsi untuk mengecek apakah bilangan genap atau tidak. Kalau `_counter % 2 == 1`, maka akan mengatur variabel `_isEven = false`, dan sebaliknya.
 
-2. Berikutnya, akan menampilkan tulisan ganjil dan genap sesuai dengan logic seperti berikut:
-    ```dart
-        if (_isEven)
-            Text('GENAP', style: TextStyle(color: Colors.red))
-        else
-            Text('GANJIL', style: TextStyle(color: Colors.blue)),
-        Text(
-            '$_counter',
-            style: Theme.of(context).textTheme.headline4,
-        ),
     ```
-3. Selanjutnya, akan membuat dua button `floatingActionButton` menggunakan Row. Untuk soal bonus, maka pada bagian tombol decrement akan diatur Visibility nya. Ketika `_visible == true`, maka akan di-hide. Berikut implementasinya:
-    ```dart
-        floatingActionButton: Padding(
-            padding: EdgeInsets.only(left: 30),
-            child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-                Visibility(
-                visible: _visible,
-                child: FloatingActionButton(
-                    onPressed: _decrementCounter,
-                    tooltip: 'Decrement',
-                    child: const Icon(Icons.remove),
-                ),
-                ),
-                Expanded(child: Container()),
-                FloatingActionButton(
-                onPressed: _incrementCounter,
-                tooltip: 'Increment',
-                child: const Icon(Icons.add),
-                ),
-            ],
-            ),
-        ),
-    ```
-
+3. Membuat suatu file untuk drawer yang akan dipakai dipakai di file lainnya.
+4. Membuat suatu file `result.dart` untuk menampilkan isi dari `List<Model> listModel = []`. Akan dilakukan iterasi pada tiap elemen, dan akan ditampilkan dengan widget card.
 4. Setelah selesai, kemudian akan melakukan proses add, commit, dan push di git
 
 
