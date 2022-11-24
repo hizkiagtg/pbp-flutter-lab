@@ -189,4 +189,131 @@ Navigator akan mengelola halaman atau screen pada applikasi flutter dengan konse
 4. Membuat suatu file `result.dart` untuk menampilkan isi dari `List<Model> listModel = []`. Akan dilakukan iterasi pada tiap elemen, dan akan ditampilkan dengan widget card.
 4. Setelah selesai, kemudian akan melakukan proses add, commit, dan push di git
 
+# Proyek Flutter 9: My Watch List App
+
+## Penjelasan Apakah JSON dapat Dikembalikan Tanpa Membuat Model
+
+Sebenarnya, kita dapat melakukan fetch terhadap data JSON secara langsung tanpa membuat model terlebih dahulu. Bila melakukan fetch secara langsung, maka JSON harus dibuat menjadi suatu dynamic map. Dynamic map tersebut kemudian dapat diakses seperti penggunaan map pada umumnya, yaitu dengan menggunakan pasangan key dan value. Walaupun dapat dilakukan dengan cara tersebut, tetapi hal tersebut tidak dianjurkan. Hal ini karena ada kemungkinan field yang dikecualikan atau field yang hilang, sehingga susah untuk menangani error atau masalah kedepannya. Sehingga, lebih baik bila menggunakan model terlebih dahulu.
+
+## Penjelasan tentang Widget yang Digunakan Beserta Fungsi
+
+Berikut widget yang saya gunakan:
+
+| Widget | Fungsi |
+| ----- | ----- |
+| Checkbox | Widget untuk membuat suatu checkbox yang dapat di-klik |
+| ElevatedButton | Untuk membuat suatu button |
+| FutureBuilder | Widget yang dapat melakukan build terhadap dirinya sendiri terhadap snapshot aktivitas terakhir dengan Future|
+| ListTile | Untuk membuat list dengan widget di dalamnya, dengan 1-3 line text |
+| Scaffold | Mengatur layout basic dari widget dan isinya |
+| AppBar | Menambahkan bar aplikasi yang berisi title dengan left alignment| 
+| Text | Berisi sebuah Text yang dapat diatur propertintya|
+| Center | Mengatur layout widget menjadi center |
+| Column | Mengatur layout widget menjadi berbentuk kolom |
+| Container | Menampung beberapa widget di dalamnya |
+| LinearGradient | Untuk membuat warna gradient dari perpaduan warna lain |
+| BoxDecoration | Menyajikan cara untuk mengatur box, meliputi border, body, dsb |
+| InputDecoration | Untuk konfigurasi input text field (border, style, dsb) |
+| RoundedRectangleBorder | Untuk membuat border pada widget |
+| SizedBox | Widget kosong dengan ukuran yang dapat diatur |
+| Dialog | Widget untuk menampilkan dialog ketika suatu item di trigger |
+| Stack | Widget untuk menampung beberapa content berupa stack |
+| Card | Widget untuk menampung komponen dalam suatu card |
+
+## Penjelasan tentang Proses Fetching Data JSON
+
+Awalnya, data di fetch dari fungsi `fetch`. Fungsi tersebut akan melakukan get dari HTTP. Kemudian, fungsi tersebut akan mengembalikan suatu objek dari model yang telah dibuat sebelumnya, dalam kasus ini objek `Wacthlist`. Kemudian, widget `FutureBuilder` akan melakukan pemanggilan terhadap fungsi `fetch`, kemudian menunggu terhadap respon tersebut. Ketika data di fetch, `FutureBuilder` tersebut akan mengembalikan suatu `ListView.builder`, yang berisi kumpulan `ListTiles`. `ListTiles` tersebut berisikan data yang sudah dipetakan dari fungsi `fetch`.
+
+## Implementasi Checklist
+
+1. Membuat suatu file `watchlist.dart` dan membuat suatu class `WatchPage` yang merupakan turunan dari `Stateful Widget`. 
+2. Membuat suatu file `watchlistModel.dart`, untuk membuat model berisi fields yang dibutuhkan. Berikut tampilan modelnya:
+
+    ```dart
+        class Watchlist {
+            Watchlist({
+                required this.model,
+                required this.pk,
+                required this.fields,
+            });
+
+            String model;
+            int pk;
+            Fields fields;
+
+            factory Watchlist.fromJson(Map<String, dynamic> json) => Watchlist(
+                    model: json["model"],
+                    pk: json["pk"],
+                    fields: Fields.fromJson(json["fields"]),
+                );
+
+            Map<String, dynamic> toJson() => {
+                    "model": this.model,
+                    "pk": this.pk,
+                    "fields": this.fields.toJson(),
+                };
+                }
+
+        class Fields {
+            Fields({
+                required this.title,
+                required this.watched,
+                required this.rating,
+                required this.releaseDate,
+                required this.review,
+            });
+
+            String title;
+            bool watched;
+            int rating;
+            DateTime releaseDate;
+            String review;
+
+            factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+                    title: json["title"],
+                    watched: json["watched"],
+                    rating: json["rating"],
+                    releaseDate: DateTime.parse(json["release_date"]),
+                    review: json["review"],
+                );
+
+            Map<String, dynamic> toJson() => {
+                    "title": title,
+                    "watched": watched,
+                    "rating": rating,
+                    "release_date":
+                        "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
+                    "review": review,
+                };
+            }
+    ```
+3. Membuat suatu file untuk fungsi `fetch` data JSON. Fungsi tersebut dibuat di `method.dart`. Berikut implementasinya:
+    ```dart
+        Future<List<Watchlist>> fetch() async {
+            var url = Uri.parse('https://tugas1pbp.herokuapp.com/mywatchlist/json/');
+            var response = await http.get(
+                url,
+                headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+                },
+            );
+
+            // melakukan decode response menjadi bentuk json
+            var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+            // melakukan konversi data json menjadi object watch
+            List<Watchlist> watch = [];
+            for (var d in data) {
+                if (d != null) {
+                watch.add(Watchlist.fromJson(d));
+                }
+            }
+            return watch;
+        }
+    ```
+4. Class `WatchPage` kemudian akan berisikan suatu widget `FututreBuilder`, yang kemudian nantinya akan melakukan fetch JSON dengan fungsi `fetch`. Kemudian, akan menampilkan semua judul JSON dengan widget `ListTiles`.
+5. Kemudian, akan membuat suatu file baru yang berisikan detail dari watchlist, yaitu `watchDetail.dart`. File tersebut berisikan class `WatchDetail`, yang akan menerima parameter object `Watchlist` yaitu watch.
+6. Akan menambahkan
+
 
