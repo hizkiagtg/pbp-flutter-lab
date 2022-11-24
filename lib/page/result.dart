@@ -1,7 +1,7 @@
-import 'package:counter_7/drawer.dart';
+import 'package:counter_7/page/drawer.dart';
 import 'package:counter_7/main.dart';
-import 'package:counter_7/form.dart';
-import 'package:counter_7/model.dart';
+import 'package:counter_7/page/form.dart';
+import 'package:counter_7/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
