@@ -202,6 +202,7 @@ Berikut widget yang saya gunakan:
 | Widget | Fungsi |
 | ----- | ----- |
 | Checkbox | Widget untuk membuat suatu checkbox yang dapat di-klik |
+| GestureDetector | Widget untuk mendeteksi aksi pada suatu widget |
 | ElevatedButton | Untuk membuat suatu button |
 | FutureBuilder | Widget yang dapat melakukan build terhadap dirinya sendiri terhadap snapshot aktivitas terakhir dengan Future|
 | ListTile | Untuk membuat list dengan widget di dalamnya, dengan 1-3 line text |
@@ -314,6 +315,20 @@ Awalnya, data di fetch dari fungsi `fetch`. Fungsi tersebut akan melakukan get d
     ```
 4. Class `WatchPage` kemudian akan berisikan suatu widget `FututreBuilder`, yang kemudian nantinya akan melakukan fetch JSON dengan fungsi `fetch`. Kemudian, akan menampilkan semua judul JSON dengan widget `ListTiles`.
 5. Kemudian, akan membuat suatu file baru yang berisikan detail dari watchlist, yaitu `watchDetail.dart`. File tersebut berisikan class `WatchDetail`, yang akan menerima parameter object `Watchlist` yaitu watch.
-6. Akan menambahkan
+6. Akan menambahkan widget `GestureDetector` ketika melakukan tap pada suatu widget `ListTiles`. Kemudian, akan mengirim data yang di-tap ke halaman `WatchDetail`, serta akan menuju ke halaman `WatchDetail` dengan navigasi sebagai berikut:
+    ```dart 
+        itemBuilder: (_, index) => GestureDetector(
+            onTap: () {
+                Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        WatchDetail(watch: snapshot.data![index])),
+                );
+            },
+        )
+    ```
+    Di halaman `WatchDetail` akan ditambahkan tombol back, yang menavigasi ke halaman `WatchPage` bila ditekan.
+7. Melakukan `git add - push - commit` terhadap perubahan yang dilakukan.
 
 
